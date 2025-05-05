@@ -8,7 +8,7 @@ st.set_page_config(page_title="Science & Technology Dashboard 🇱🇰", layout=
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv(r"C:\Users\shazneen\Desktop\University\Degree\Year 02\Semester - 02\Data Science Proj. Lifecycle\ICW\science_and_tech_sl.csv")  # Path should be updated to match the location
+    df = pd.read_csv("science_and_tech_sl.csv")
     return df
 
 df = load_data()
