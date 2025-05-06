@@ -28,7 +28,7 @@ Explore how the country is progressing in R&D investment, research publications,
 and high-tech exports across different years.
 """)
 
-# Open the sidebar by default by rendering content right away
+# Sidebar content (keeping it open by default as part of initial layout)
 st.sidebar.markdown("### Select Year Range")
 years = sorted(df["Year"].unique())
 min_year, max_year = int(min(years)), int(max(years))
