@@ -55,48 +55,52 @@ indicators = {
 chart_types = ["line", "bar", "scatter", "area", "line", "bar", "scatter", "area"]
 colors = ["#2c7fb8", "#41ab5d", "#1d91c0", "#78c679", "#225ea8", "#31a354", "#0c2c84", "#006d2c"]
 
-# Full screen layout by using container
-with st.container():
-    # Loop over indicators
-    for i, (indicator, meta) in enumerate(indicators.items()):
-        data = df_filtered[df_filtered["Indicator.Name"] == indicator].sort_values("Year")
-        values = data["Value"]
-        unit = meta["unit"]
+# Layout with 3 columns
+cols = st.columns(3)
 
-        min_val = round(values.min())
-        max_val = round(values.max())
-        avg_val = round(values.mean())
+# Loop over indicators
+for i, (indicator, meta) in enumerate(indicators.items()):
+    data = df_filtered[df_filtered["Indicator.Name"] == indicator].sort_values("Year")
+    values = data["Value"]
+    unit = meta["unit"]
 
-        # Fix for R&D Expenditure showing zeros (check for NaN and proper float conversion)
-        if unit == "USD":
-            min_str = f"${min_val:,.0f}"
-            max_str = f"${max_val:,.0f}"
-            avg_str = f"${avg_val:,.0f}"
-        else:
-            min_str = f"{min_val:,} {unit}"
-            max_str = f"{max_val:,} {unit}"
-            avg_str = f"{avg_val:,} {unit}"
+    min_val = round(values.min())
+    max_val = round(values.max())
+    avg_val = round(values.mean())
 
-        # Choose chart type
-        chart_type = chart_types[i % len(chart_types)]
-        color = colors[i % len(colors)]
+    # Fix for R&D Expenditure showing zeros (check for NaN and proper float conversion)
+    if unit == "USD":
+        min_str = f"${min_val:,.0f}"
+        max_str = f"${max_val:,.0f}"
+        avg_str = f"${avg_val:,.0f}"
+    else:
+        min_str = f"{min_val:,} {unit}"
+        max_str = f"{max_val:,} {unit}"
+        avg_str = f"{avg_val:,} {unit}"
 
-        if chart_type == "line":
-            fig = go.Figure(go.Scatter(x=data["Year"], y=data["Value"], mode="lines+markers", line=dict(color=color)))
-        elif chart_type == "bar":
-            fig = go.Figure(go.Bar(x=data["Year"], y=data["Value"], marker_color=color))
-        elif chart_type == "scatter":
-            fig = go.Figure(go.Scatter(x=data["Year"], y=data["Value"], mode="markers", marker=dict(color=color, size=10)))
-        elif chart_type == "area":
-            fig = go.Figure(go.Scatter(x=data["Year"], y=data["Value"], fill="tozeroy", mode="lines", line=dict(color=color)))
+    # Choose chart type
+    chart_type = chart_types[i % len(chart_types)]
+    color = colors[i % len(colors)]
 
-        fig.update_layout(
-            title={'text': indicator, 'x': 0.5, 'xanchor': 'center'},
-            margin=dict(l=10, r=10, t=30, b=20),
-            height=350
-        )
+    # Create the appropriate chart
+    if chart_type == "line":
+        fig = go.Figure(go.Scatter(x=data["Year"], y=data["Value"], mode="lines+markers", line=dict(color=color)))
+    elif chart_type == "bar":
+        fig = go.Figure(go.Bar(x=data["Year"], y=data["Value"], marker_color=color))
+    elif chart_type == "scatter":
+        fig = go.Figure(go.Scatter(x=data["Year"], y=data["Value"], mode="markers", marker=dict(color=color, size=10)))
+    elif chart_type == "area":
+        fig = go.Figure(go.Scatter(x=data["Year"], y=data["Value"], fill="tozeroy", mode="lines", line=dict(color=color)))
 
-        # Display chart and metrics in full screen width layout
+    fig.update_layout(
+        title={'text': indicator, 'x': 0.5, 'xanchor': 'center'},
+        margin=dict(l=10, r=10, t=30, b=20),
+        height=350
+    )
+
+    # Display charts and metrics in each column
+    col = cols[i % 3]
+    with col:
         st.markdown(f"#### {indicator}")
         st.caption(meta["desc"])
         st.plotly_chart(fig, use_container_width=True)
