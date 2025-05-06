@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import time
 
 st.set_page_config(page_title="Sri Lanka Science & Tech Dashboard", layout="wide")
 
@@ -9,10 +8,14 @@ st.set_page_config(page_title="Sri Lanka Science & Tech Dashboard", layout="wide
 st.markdown("<h1 style='text-align: center; color: #006699;'>🇱🇰 Sri Lanka - Science & Technology Dashboard</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
-# Progress bar for data loading
+# Cached data loader
+@st.cache_data
+def load_data():
+    return pd.read_csv("science_and_tech_sl.csv")
+
+# Load data
 with st.spinner("Loading dataset..."):
-    time.sleep(1)  # Simulate loading
-    df = pd.read_csv("science_and_tech_sl.csv")
+    df = load_data()
 
 # Convert year to string for filtering
 df['Year'] = df['Year'].astype(str)
@@ -20,10 +23,12 @@ df['Year'] = df['Year'].astype(str)
 # Sidebar - Filtering
 st.sidebar.header("🔍 Filter the Data")
 
+# Multi-select for year selection
 selected_years = st.sidebar.multiselect(
     "📅 Select Year(s):", sorted(df['Year'].unique()), default=sorted(df['Year'].unique())
 )
 
+# Multi-select for indicators
 indicators = df['Indicator.Name'].unique()
 selected_indicators = st.sidebar.multiselect(
     "📊 Select Indicator(s):", indicators, default=[]
@@ -32,26 +37,26 @@ selected_indicators = st.sidebar.multiselect(
 if st.sidebar.button("✅ Apply Filters"):
     st.success("Filters applied! See the updated charts below 👇")
 
+# Filter the dataframe based on selected years
 filtered_df = df[df['Year'].isin(selected_years)]
 
 # Collapsible KPIs Section
-with st.expander("🔎 Key Science & Tech KPIs (Latest Year)", expanded=True):
-    latest_year = df['Year'].max()
-    latest_data = df[df['Year'] == latest_year]
-    st.markdown(f"### 📌 Insights for {latest_year}")
+with st.expander("🔎 Key Science & Tech KPIs (Selected Years)", expanded=True):
+    selected_data = df[df['Year'].isin(selected_years)]
+    st.markdown(f"### 📌 Insights for {', '.join(selected_years)}")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        rd_value = latest_data[latest_data['Indicator.Name'] == 'Research and development expenditure (% of GDP)']['Value'].sum()
+        rd_value = selected_data[selected_data['Indicator.Name'] == 'Research and development expenditure (% of GDP)']['Value'].sum()
         st.metric("R&D Expenditure (% of GDP)", f"{rd_value:.2f}%")
 
     with col2:
-        articles = latest_data[latest_data['Indicator.Name'] == 'Scientific and technical journal articles']['Value'].sum()
+        articles = selected_data[selected_data['Indicator.Name'] == 'Scientific and technical journal articles']['Value'].sum()
         st.metric("Sci. Journal Articles", int(articles))
 
     with col3:
-        patents = latest_data[latest_data['Indicator.Name'] == 'Patent applications, nonresidents']['Value'].sum()
+        patents = selected_data[selected_data['Indicator.Name'] == 'Patent applications, nonresidents']['Value'].sum()
         st.metric("Nonresident Patents", int(patents))
 
 # Chart mappings
@@ -104,10 +109,7 @@ else:
                 fig = px.scatter(data, x="Year", y="Value", size="Value", labels={"Value": yaxis, "Year": "Year"})
             elif chart_type == 'pie':
                 pie_data = data.groupby('Year').sum(numeric_only=True).reset_index()
-                for _, row in pie_data.iterrows():
-                    fig = px.pie(names=[row['Year']], values=[row['Value']], title=f"{title} - {row['Year']}")
-                    st.plotly_chart(fig, use_container_width=True)
-                continue
+                fig = px.pie(pie_data, names='Year', values='Value', title=f"{title} - {pie_data['Year'].iloc[0]}")
             elif chart_type == 'histogram':
                 fig = px.histogram(data, x="Value", nbins=10, labels={"Value": yaxis})
             elif chart_type == 'box':
