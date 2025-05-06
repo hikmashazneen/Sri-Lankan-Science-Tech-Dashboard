@@ -96,7 +96,6 @@ for i, (indicator, meta) in enumerate(indicators.items()):
             st.metric(label="Latest Value", value=fmt(latest_val), delta=delta)
             st.plotly_chart(fig, use_container_width=True)
             st.markdown(f"**Min:** {fmt(min_val)} | **Max:** {fmt(max_val)} | **Avg:** {fmt(avg_val)}")
-            st.markdown("---")
 
     summary_data.append({
         "Indicator": indicator,
