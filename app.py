@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import plotly.express as px
 
 st.set_page_config(layout="wide")
 
 @st.cache_data
-
 def load_data():
     url = "https://raw.githubusercontent.com/hikmashazneen/Sri-Lankan-Science-Tech-Dashboard/refs/heads/main/science_and_tech_sl.csv"
     df = pd.read_csv(url)
@@ -35,8 +33,9 @@ indicators = {
     "High-tech Exports (US$)": {"desc": "Value of high-tech exports in US dollars.", "unit": "USD"}
 }
 
+# By default, show only the "Science Journal Articles"
 selected_indicators = st.sidebar.multiselect(
-    "Choose Indicators to Display", list(indicators.keys()), default=list(indicators.keys())
+    "Choose Indicators to Display", list(indicators.keys()), default=["Science Journal Articles"]
 )
 
 # Filter data by year and selected indicators
