@@ -18,7 +18,6 @@ df.fillna(df.mean(numeric_only=True), inplace=True)  # For numerical columns
 df.fillna(df.mode().iloc[0], inplace=True)  # For categorical columns
 
 # Page setup
-st.set_page_config(layout="wide")
 st.title("Sri Lanka Science & Technology Indicators Dashboard")
 st.markdown("""
 This interactive dashboard presents key science and technology indicators for Sri Lanka. 
