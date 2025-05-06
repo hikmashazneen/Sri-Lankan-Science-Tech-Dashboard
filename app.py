@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
+# Page configuration - This must be at the start of your script to work
+st.set_page_config(layout="wide")  # Set the page layout to wide
+
 # Load data and cache it
 @st.cache_data
 def load_data():
