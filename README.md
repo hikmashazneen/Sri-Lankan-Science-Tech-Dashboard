@@ -9,7 +9,7 @@ This interactive Streamlit dashboard visualizes eight key science and technology
 - 📌 Summary statistics: min, max, average, and latest value
 - 📤 Export and analysis-ready layout
 
-## 🧪 Indicators Visualized
+## 📊 Indicators Visualized
 
 1. R&D Expenditure (% of GDP)  
 2. Science Journal Articles  
