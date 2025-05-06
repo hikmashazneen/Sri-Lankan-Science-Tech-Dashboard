@@ -42,7 +42,7 @@ selected_indicators = st.sidebar.multiselect(
 df_filtered = df[(df["Year"] >= selected_year_range[0]) & (df["Year"] <= selected_year_range[1]) & df["Indicator.Name"].isin(selected_indicators)]
 
 # Page title
-st.title("🇱🇰 Sri Lanka Science & Technology Indicators Dashboard")
+st.title("Sri Lanka Science & Technology Indicators Dashboard")
 
 # Check interpolation warning
 if df['Value'].isna().sum() > 0:
