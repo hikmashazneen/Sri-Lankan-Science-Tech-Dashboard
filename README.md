@@ -24,8 +24,7 @@ This interactive Streamlit dashboard visualizes eight key science and technology
 
 - Most improved indicator across available years  
 - National average R&D spending trend  
-- Change (delta) in indicator value compared to the previous year  
-- Data gaps handled and annotated when interpolated
+- Change (delta) in indicator value
 
 ## 📁 Dataset Source
 
